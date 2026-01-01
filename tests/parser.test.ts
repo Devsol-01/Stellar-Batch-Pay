@@ -1,0 +1,125 @@
+/**
+ * Test suite for input parsing functions
+ */
+
+import { parseJSON, parseCSV, parseInput } from '../lib/stellar/parser';
+
+describe('JSON Parser', () => {
+  test('parses valid JSON array', () => {
+    const json = JSON.stringify([
+      {
+        address: 'GBBD47UZM2HN7D7XZIZVG4KVAUC36THN5BES6RMNNOK5TUNXAUCVMAKER',
+        amount: '100',
+        asset: 'XLM',
+      },
+    ]);
+    const result = parseJSON(json);
+    expect(result).toHaveLength(1);
+    expect(result[0].amount).toBe('100');
+  });
+
+  test('parses JSON object with payments property', () => {
+    const json = JSON.stringify({
+      payments: [
+        {
+          address: 'GBBD47UZM2HN7D7XZIZVG4KVAUC36THN5BES6RMNNOK5TUNXAUCVMAKER',
+          amount: '100',
+          asset: 'XLM',
+        },
+      ],
+    });
+    const result = parseJSON(json);
+    expect(result).toHaveLength(1);
+  });
+
+  test('throws on invalid JSON', () => {
+    expect(() => parseJSON('invalid json')).toThrow();
+  });
+
+  test('throws on JSON without payments', () => {
+    const json = JSON.stringify({ data: [] });
+    expect(() => parseJSON(json)).toThrow();
+  });
+
+  test('preserves amount as string', () => {
+    const json = JSON.stringify([
+      {
+        address: 'GBBD47UZM2HN7D7XZIZVG4KVAUC36THN5BES6RMNNOK5TUNXAUCVMAKER',
+        amount: '123.456789',
+        asset: 'XLM',
+      },
+    ]);
+    const result = parseJSON(json);
+    expect(result[0].amount).toBe('123.456789');
+  });
+});
+
+describe('CSV Parser', () => {
+  test('parses valid CSV', () => {
+    const csv = `address,amount,asset
+GBBD47UZM2HN7D7XZIZVG4KVAUC36THN5BES6RMNNOK5TUNXAUCVMAKER,100,XLM`;
+    const result = parseCSV(csv);
+    expect(result).toHaveLength(1);
+    expect(result[0].amount).toBe('100');
+  });
+
+  test('parses CSV with multiple rows', () => {
+    const csv = `address,amount,asset
+GBBD47UZM2HN7D7XZIZVG4KVAUC36THN5BES6RMNNOK5TUNXAUCVMAKER,100,XLM
+GBJCHUKZMTFSLOMNC7P4TS4VJJBTCYL3AEYZ7R37ZJNHYQM7MDEBC67,50,XLM`;
+    const result = parseCSV(csv);
+    expect(result).toHaveLength(2);
+  });
+
+  test('handles whitespace in CSV', () => {
+    const csv = `address, amount, asset
+GBBD47UZM2HN7D7XZIZVG4KVAUC36THN5BES6RMNNOK5TUNXAUCVMAKER, 100, XLM`;
+    const result = parseCSV(csv);
+    expect(result[0].amount).toBe('100');
+  });
+
+  test('skips empty lines', () => {
+    const csv = `address,amount,asset
+GBBD47UZM2HN7D7XZIZVG4KVAUC36THN5BES6RMNNOK5TUNXAUCVMAKER,100,XLM
+
+GBJCHUKZMTFSLOMNC7P4TS4VJJBTCYL3AEYZ7R37ZJNHYQM7MDEBC67,50,XLM`;
+    const result = parseCSV(csv);
+    expect(result).toHaveLength(2);
+  });
+
+  test('throws without required columns', () => {
+    const csv = `address,amount
+GBBD47UZM2HN7D7XZIZVG4KVAUC36THN5BES6RMNNOK5TUNXAUCVMAKER,100`;
+    expect(() => parseCSV(csv)).toThrow();
+  });
+
+  test('throws on empty data', () => {
+    const csv = 'address,amount,asset\n';
+    expect(() => parseCSV(csv)).toThrow();
+  });
+});
+
+describe('Format Detection', () => {
+  test('parses JSON format', () => {
+    const json = JSON.stringify([
+      {
+        address: 'GBBD47UZM2HN7D7XZIZVG4KVAUC36THN5BES6RMNNOK5TUNXAUCVMAKER',
+        amount: '100',
+        asset: 'XLM',
+      },
+    ]);
+    const result = parseInput(json, 'json');
+    expect(result).toHaveLength(1);
+  });
+
+  test('parses CSV format', () => {
+    const csv = `address,amount,asset
+GBBD47UZM2HN7D7XZIZVG4KVAUC36THN5BES6RMNNOK5TUNXAUCVMAKER,100,XLM`;
+    const result = parseInput(csv, 'csv');
+    expect(result).toHaveLength(1);
+  });
+
+  test('throws on unknown format', () => {
+    expect(() => parseInput('data', 'xml' as any)).toThrow();
+  });
+});
