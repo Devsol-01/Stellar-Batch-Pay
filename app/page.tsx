@@ -1,4 +1,5 @@
-import { LandingHero } from "@/components/landing-hero"
+import { Hero } from "@/components/landing/Hero"
+import { LandingNavbar } from "@/components/landing/LandingNavbar"
 import { FeatureSection } from "@/components/feature-section"
 import { HowItWorks } from "@/components/how-it-works"
 import { CtaSection } from "@/components/cta-section"
@@ -10,8 +11,7 @@ export default function LandingPage() {
     return (
         <main className="min-h-screen bg-background text-foreground flex flex-col">
             <Navbar />
-
-            <LandingHero />
+            <Hero />
             <HowItWorks />
             <FeatureSection />
             <CtaSection />
