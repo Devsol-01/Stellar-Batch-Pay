@@ -5,11 +5,12 @@ import { HowItWorks } from "@/components/how-it-works"
 import { CtaSection } from "@/components/cta-section"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
+import { Navbar } from "@/components/landing/navbar"
 
 export default function LandingPage() {
     return (
-        <main className="min-h-screen bg-[#0B0E14] text-foreground flex flex-col">
-            <LandingNavbar />
+        <main className="min-h-screen bg-background text-foreground flex flex-col">
+            <Navbar />
             <Hero />
             <HowItWorks />
             <FeatureSection />
