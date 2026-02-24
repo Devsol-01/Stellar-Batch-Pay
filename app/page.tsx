@@ -10,6 +10,7 @@ import CryptoPaymentSection from "@/components/cryptopay-section";
 import { Navbar } from "@/components/landing/navbar";
 import { ProcessSection } from "@/components/landing/process-section";
 import { SecuritySection } from "@/components/landing/security-section";
+import { PaymentWorkflowsSection } from "@/components/payment-workflows-section";
 import { MissionSection } from "@/components/landing/mission-section";
 import { WhyTeamsChooseBatchPay } from "@/components/landing/WhyTeamsChooseBatchPay";
 
@@ -24,6 +25,7 @@ export default function LandingPage() {
       <FeatureSection />
       <BlockchainFeaturesSection />
       <SecuritySection />
+      <PaymentWorkflowsSection />
       <MissionSection />
       <CryptoPaymentSection />
       <CtaSection />
