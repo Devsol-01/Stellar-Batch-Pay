@@ -6,7 +6,7 @@ import { FileUpload } from "@/components/file-upload";
 import { BatchSummary } from "@/components/batch-summary";
 import { ResultsDisplay } from "@/components/results-display";
 import { JobProgress } from "@/components/job-progress";
-import { parseInput, validatePaymentInstructions } from "@/lib/stellar";
+import { parseInput, parseFileStream, validatePaymentInstructions } from "@/lib/stellar";
 import type {
   PaymentInstruction,
   BatchResult,
@@ -14,7 +14,7 @@ import type {
 } from "@/lib/stellar/types";
 import { useBatchHistory } from "@/hooks/use-batch-history";
 
-type PageState = "upload" | "preview" | "polling" | "results";
+type PageState = "upload" | "parsing" | "preview" | "polling" | "results";
 
 interface PollResponse {
   jobId: string;
@@ -36,6 +36,8 @@ export default function Home() {
   const [result, setResult] = useState<BatchResult | null>(null);
   const [error, setError] = useState<string>("");
   const [isLoading, setIsLoading] = useState(false);
+
+  const [parsedCount, setParsedCount] = useState<number>(0);
 
   // Async job tracking
   const [jobId, setJobId] = useState<string | null>(null);
@@ -88,19 +90,41 @@ export default function Home() {
   const handleFileSelect = async (file: File, format: "json" | "csv") => {
     try {
       setError("");
-      const content = await file.text();
-      const parsed = parseInput(content, format);
 
-      const validation = validatePaymentInstructions(parsed);
-      if (!validation.valid) {
-        const errors = Array.from(validation.errors.values()).slice(0, 3);
-        throw new Error(`Invalid payments: ${errors.join(", ")}`);
+      if (format === "csv") {
+        setState("parsing");
+        setParsedCount(0);
+
+        parseFileStream(file, {
+          onProgress: (count) => {
+            setParsedCount(count);
+          },
+          onComplete: (parsed) => {
+            setPayments(parsed);
+            setState("preview");
+          },
+          onError: (err) => {
+            setError(err.message);
+            setState("upload");
+          }
+        });
+
+      } else {
+        const content = await file.text();
+        const parsed = parseInput(content, format);
+
+        const validation = validatePaymentInstructions(parsed);
+        if (!validation.valid) {
+          const errors = Array.from(validation.errors.values()).slice(0, 3);
+          throw new Error(`Invalid payments: ${errors.join(", ")}`);
+        }
+
+        setPayments(parsed);
+        setState("preview");
       }
-
-      setPayments(parsed);
-      setState("preview");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to parse file");
+      setState("upload");
     }
   };
 
@@ -184,6 +208,17 @@ export default function Home() {
                 Upload Payment File
               </h2>
               <FileUpload onFileSelect={handleFileSelect} />
+            </div>
+          </div>
+        )}
+
+        {/* ── Parsing ───────────────────────────────────────────────── */}
+        {state === "parsing" && (
+          <div className="space-y-6">
+            <div className="bg-card border border-border rounded-lg p-6 py-12 text-center">
+              <h2 className="text-xl font-semibold mb-4 text-primary animate-pulse">Parsing File...</h2>
+              <div className="text-4xl font-mono mb-2">{parsedCount.toLocaleString()}</div>
+              <p className="text-sm text-muted-foreground">Rows processed</p>
             </div>
           </div>
         )}
