@@ -166,23 +166,23 @@ export default function SettingsPage() {
         <CardContent className="space-y-6">
           {/* Default Network */}
           <div className="space-y-3">
-            <label className="text-sm text-slate-300 font-medium">
+            <label className="text-sm text-slate-400 font-medium">
               Default Network
             </label>
             <Select value={defaultNetwork} onValueChange={setDefaultNetwork}>
-              <SelectTrigger className="w-full bg-slate-950/50 border-slate-800 text-white hover:bg-slate-900">
+              <SelectTrigger className="w-full h-16 bg-slate-900 border-slate-800/50 text-white hover:bg-slate-950 [&_svg]:text-white [&_svg]:opacity-100 text-lg px-4 [&_svg]:size-5">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent className="bg-slate-900 border-slate-800">
                 <SelectItem
                   value="testnet"
-                  className="text-white hover:bg-slate-800"
+                  className="text-white hover:bg-slate-800 text-base py-3"
                 >
-                  Testnet
+                  Testnets
                 </SelectItem>
                 <SelectItem
                   value="mainnet"
-                  className="text-white hover:bg-slate-800"
+                  className="text-white hover:bg-slate-800 text-base py-3"
                 >
                   Mainnet
                 </SelectItem>
@@ -192,29 +192,29 @@ export default function SettingsPage() {
 
           {/* Default Asset */}
           <div className="space-y-3">
-            <label className="text-sm text-slate-300 font-medium">
+            <label className="text-sm text-slate-400 font-medium">
               Default Asset
             </label>
             <Select value={defaultAsset} onValueChange={setDefaultAsset}>
-              <SelectTrigger className="w-full bg-slate-950/50 border-slate-800 text-white hover:bg-slate-900">
+              <SelectTrigger className="w-full h-16 bg-slate-950 border-slate-800/50 text-white hover:bg-slate-950 [&_svg]:text-white [&_svg]:opacity-100 text-lg px-4 [&_svg]:size-5">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent className="bg-slate-900 border-slate-800">
                 <SelectItem
                   value="xlm"
-                  className="text-white hover:bg-slate-800"
+                  className="text-white hover:bg-slate-800 text-base py-3"
                 >
                   XLM (Stellar Lumens)
                 </SelectItem>
                 <SelectItem
                   value="usdc"
-                  className="text-white hover:bg-slate-800"
+                  className="text-white hover:bg-slate-800 text-base py-3"
                 >
                   USDC
                 </SelectItem>
                 <SelectItem
                   value="usdt"
-                  className="text-white hover:bg-slate-800"
+                  className="text-white hover:bg-slate-800 text-base py-3"
                 >
                   USDT
                 </SelectItem>
