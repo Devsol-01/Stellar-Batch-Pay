@@ -3,11 +3,49 @@
 import { ChevronDown } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
+import { Badge } from "@/components/ui/badge"
+import { cn } from "@/lib/utils"
 import { SummaryCard } from "@/components/dashboard/SummaryCard"
 import { ActionCard } from "@/components/dashboard/ActionCard"
 import { TipsCard } from "@/components/dashboard/TipsCard"
 import { RecentBatchesTable } from "@/components/dashboard/RecentBatchesTable"
 import { OverviewMetrics } from "@/components/dashboard/overview-metrics"
+
+
+const stats = [
+  {
+    title: "Total Payments",
+    value: "24,567",
+    change: "+12.5%",
+    icon: ArrowUpRight,
+    iconBg: "bg-teal-500/20",
+    iconColor: "text-teal-500",
+  },
+  {
+    title: "Total Amount Sent",
+    value: "$1.2M",
+    change: "+8.2%",
+    icon: Wallet,
+    iconBg: "bg-blue-500/20",
+    iconColor: "text-blue-500",
+  },
+  {
+    title: "Success Rate",
+    value: "98.7%",
+    change: "+2.1%",
+    icon: CheckCircle2,
+    iconBg: "bg-green-500/20",
+    iconColor: "text-green-500",
+  },
+  {
+    title: "Active Batches",
+    value: "12",
+    change: "Live",
+    icon: Clock,
+    iconBg: "bg-purple-500/20",
+    iconColor: "text-purple-500",
+  },
+]
 
 
 export default function DashboardPage() {
